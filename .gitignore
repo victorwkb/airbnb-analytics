@@ -3,6 +3,7 @@ __pycache__/
 # terraform files
 **/.terraform
 **.tfstate*
+**.tfvars
 
 # airflow
 **/logs

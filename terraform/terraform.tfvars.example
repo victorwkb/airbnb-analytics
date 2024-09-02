@@ -1,0 +1,3 @@
+# Redshift
+rs_master_username = <Enter your Redshift username>
+rs_master_password = <Enter your Redshift password>

@@ -15,7 +15,7 @@ provider "aws" {
 
 # S3 bucket with lifecycle config
 resource "aws_s3_bucket" "data-lake-bucket" {
-  bucket = var.s3-bucket
+  bucket = var.s3_bucket
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "bucket-lifecycle" {
@@ -46,8 +46,17 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket-lifecycle" {
   }
 }
 
-# aws-ia MWAA environment
+# Redshift cluster
+resource "aws_redshift_cluster" "airbnb-data-warehouse" {
+  cluster_identifier = var.redshift_cluster
+  database_name      = var.rs_db_name
+  master_username    = var.rs_master_username
+  master_password    = var.rs_master_password
+  node_type          = "dc2.large"
+  cluster_type       = "single-node"
+}
 
+# aws-ia MWAA environment
 data "aws_availability_zones" "available" {}
 
 data "aws_caller_identity" "current" {}
@@ -62,7 +71,7 @@ module "mwaa" {
   source  = "aws-ia/mwaa/aws"
   version = "0.0.6"
 
-  name              = var.name
+  name              = var.mwaa_name
   airflow_version   = "2.9.2"
   environment_class = "mw1.small"
   create_s3_bucket  = false
@@ -115,7 +124,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
 
-  name = var.name
+  name = var.mwaa_name
   cidr = var.vpc_cidr
 
   azs             = local.azs
